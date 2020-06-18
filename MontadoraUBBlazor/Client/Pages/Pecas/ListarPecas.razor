@@ -1,0 +1,64 @@
+﻿@page "/pecas/listapecas"
+@page "/pecas/"
+@using MontadoraUBBlazor.Shared.Models
+@inject HttpClient http
+<h3>Lista de Peças</h3>
+
+<div>
+    <a href="/pecas/cadastropecas" class="btn btn-primary">Cadastrar Peças</a>
+</div>
+
+<div>
+    @if (pecas == null)
+    {
+        <text>Carregando...</text>
+    }
+    else if (pecas.Count == 0)
+    {
+        <text>Nenhuma Peça foi cadastrada no banco de dados</text>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th> Id </th>
+                    <th> Nome da Peça </th>
+                    <th> Valor Unit. por Peça </th>
+                    <th> ID Fornecedor da Peça </th>
+                    <th> Nome do Fornecedor da Peça </th>
+                    <th> Codigo da Peça </th>
+                    <th> Valor Total da compra </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var peca in pecas)
+                {
+                    <tr>
+                        <td>@peca.ID</td>
+                        <td>@peca.NomePeca</td>
+                        <td>@peca.ValorUnitPeca</td>
+                        <td>@peca.IDFornecedorPeca</td>
+                        <td>@peca.NomeFornecedorPeca</td>
+                        <td>@peca.CodigoPeca</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    List<Peca> pecas;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPecas();
+    }
+
+    async Task LoadPecas()
+    {
+        pecas = await http.GetFromJsonAsync<List<Peca>>("api/peca");
+    }
+
+}
